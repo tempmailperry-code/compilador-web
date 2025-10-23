@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Compilador Personal de Mods</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f4f4; text-align: center; padding-top: 50px; }
+        .container { background-color: white; max-width: 500px; margin: auto; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+        input[type="file"] { border: 1px solid #ddd; padding: 10px; border-radius: 4px; width: 80%; }
+        button { background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 20px; }
+        button:hover { background-color: #218838; }
+        #status { margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sube tu Mod Forge 1.8.9 (.zip/.rar)</h1>
+        <input type="file" id="modFile" accept=".zip,.rar" />
+        <br />
+        <button onclick="uploadAndCompile()">Subir y Compilar</button>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        async function uploadAndCompile() {
+            const fileInput = document.getElementById('modFile');
+            const statusDiv = document.getElementById('status');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                statusDiv.textContent = "Por favor, selecciona un archivo.";
+                statusDiv.style.color = "red";
+                return;
+            }
+
+            statusDiv.textContent = "Subiendo archivo, por favor espera...";
+            statusDiv.style.color = "blue";
+
+            const formData = new FormData();
+            formData.append('modFile', file);
+            formData.append('fileName', file.name);
+
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const resultText = await response.text();
+
+                if (response.ok) {
+                    statusDiv.textContent = resultText;
+                    statusDiv.style.color = "green";
+                } else {
+                    statusDiv.textContent = `Error: ${resultText}`;
+                    statusDiv.style.color = "red";
+                }
+            } catch (error) {
+                statusDiv.textContent = "Error de conexión con el servidor.";
+                statusDiv.style.color = "red";
+            }
+        }
+    </script>
+</body>
+</html>
