@@ -2,6 +2,8 @@
   "name": "compiler-backend",
   "version": "1.0.0",
   "dependencies": {
-    "axios": "^1.4.0"
+    "axios": "^1.6.2",
+    "multer": "^1.4.5-lts.1",
+    "cors": "^2.8.5"
   }
 }
